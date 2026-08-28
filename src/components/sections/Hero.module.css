@@ -15,13 +15,18 @@
   overflow: hidden;
 }
 
-/* Asset de 2560x1440: no hace falta blur ni scale para disimular reescalado.
+/* Asset de 1620x910 — por debajo de los 2560px que pide una imagen full-bleed,
+   decisión tomada a conciencia. En vez de blur, el reescalado se disimula
+   bajando la opacidad: la foto se funde con el ink del fondo y los artefactos
+   dejan de leerse. El brightness compensa que la foto ya es oscura de origen.
    El recorte es de ~3:1 sobre una fuente 16:9, así que solo se recorta en
-   vertical; el 40% mantiene el cogollo dentro del encuadre. */
+   vertical: el 45% deja dentro el gotero, el cuello del frasco y el abanico
+   de hojas. */
 .photo {
   object-fit: cover;
-  object-position: center 40%;
-  filter: brightness(1.15) saturate(1.05);
+  object-position: center 45%;
+  opacity: 0.72;
+  filter: brightness(1.35) saturate(1.05);
 }
 
 /* Velo: denso a la izquierda (donde va el texto) y abierto a la derecha,

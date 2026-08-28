@@ -1,381 +1,267 @@
 # spec.md — Layout base para landings por tipo de caso
 
-El *qué* de esta tarea. Las reglas fijas del proyecto están en `CLAUDE.md`.
+El *qué* del proyecto. Las reglas fijas viven en `CLAUDE.md`.
 
-**Recursos obligatorios** (no describir de memoria, leerlos):
-- `context/guion-presentacion.md` — única fuente del copy
-- `context/propuestas-referencia/` — 2 propuestas HTML existentes
-- `context/layout-referencia.png` — imagen del layout objetivo
+Este documento describía el layout **a construir**; ahora describe el layout **construido**.
+Los bloques de código que traía (§1, §7, §10) se reemplazaron por punteros al componente
+real: mantener el código duplicado aquí garantizaba que se desincronizara, y ya pasó.
+**El código es la fuente de verdad; este archivo explica la intención y el porqué.**
+
+**Recursos** (no describir de memoria, leerlos):
+
+- `context/TEXAS THC BAN_ What's a Felony Now and What's Still Legal_ (Houston Defense Attorney Explains).md`
+  — el guion, única fuente del copy
+- `context/reference-proposal/` — las 2 propuestas HTML
+- `context/visual-reference/layout-reference.jpg` — composición objetivo
+- `context/visual-reference/navbar-reference.webp` — referencia de navbar
+
+---
+
+## Sistema de layout
+
+Tres piezas compartidas. Cambiar cualquiera afecta a varias secciones a la vez.
+
+**1. Shell horizontal — `src/components/ui/Container.tsx`**
+
+`max-w-[1400px]` · `px-[46px]` · `px-[22px]` bajo `sm`. Toda sección lo usa, incluido el
+footer. Es lo que hace que los bordes izquierdos alineen de arriba a abajo.
+
+**2. Grid de dos columnas — hero, tips y resultados**
+
+```
+xl:grid-cols-[minmax(0,1fr)_448px]
+```
+
+La pista de 448px queda **reservada y vacía** en las secciones 4 y 5: es el carril por el
+que baja el formulario flotante. Las tres secciones deben declarar el mismo
+`grid-template`, o el borde izquierdo del contenido deja de alinear entre ellas.
+
+**3. Breakpoint del traslape — `xl` (1280px)**
+
+Por debajo de 1280px todo se apila y el formulario cae al flujo normal, debajo del texto
+del hero. No es `lg`: a 1024px la columna izquierda quedaba en ~420px y el grid de tres
+tips salía en columnas de 118px.
+
+Los *gaps* son distintos a propósito: `xl:gap-10` en el hero (texto pegado al formulario)
+y `xl:gap-28` en tips y resultados (aire contra el formulario).
 
 ---
 
 ## Orden de secciones
 
-1. Top bar (header sticky)
-2. Continuidad desde YouTube
-3. Navbar + Hero image
-4. Tres tips del caso
-5. Resultados de casos de Gary
-6. Formulario flotante (superpuesto sobre 3–5)
-7. Memberships & Recognition
-8. Contenido del video
-9. Formulario de consulta gratis
-10. Footer
+```
+1  Top bar (sticky, incluye la continuidad del video)
+3  Navbar + Hero image
+4  Tres tips del caso
+5  Resultados de casos de Gary
+8  Contenido del video
+7  Memberships & Recognition
+9  Formulario de consulta gratis
+10 Footer
+```
+
+**6** (formulario de intake) flota sobre 3–5. **2** quedó absorbida por **1**.
+
+La numeración se conserva para poder rastrear cada sección contra su versión original.
+El orden de render vive en `src/app/page.tsx`.
 
 ---
 
-## 1. Top bar
+## 1. Top bar → `sections/TopBar.tsx`
 
-Sticky. Lado izquierdo: disponibilidad de Gary y ubicación. Lado derecho: botón que
-hace scroll hasta el formulario de consulta rápida (sección 9).
+Sticky, `z-50`, sobre `#14110D`.
 
-```tsx
-<header className="sticky top-0 z-50">
-  <div className="bg-[#14110D] px-6 py-2.5 text-[11px] tracking-[0.05em] text-[#fffbf8c7]">
-    <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
-      <div
-        className="flex items-center gap-5"
-        style={{ fontFamily: "var(--font-inter), sans-serif" }}
-      >
-        <span className="inline-flex items-center gap-2 uppercase">
-          <span
-            className="inline-block h-1.5 w-1.5 rounded-full"
-            style={{ backgroundColor: ACCENT }}
-          />
-          Available for Federal Cases Nationwide
-        </span>
-        <span className="hidden uppercase sm:inline">Houston, Texas</span>
-      </div>
-      <div
-        className="hidden items-center gap-6 uppercase sm:flex"
-        style={{ fontFamily: "var(--font-inter), sans-serif" }}
-      >
-        <Link href="/contact" className="transition-colors hover:text-white">
-          Free Consultation
-        </Link>
-      </div>
-    </div>
-  </div>
-```
+- **Izquierda:** icono de play en `accent` + la línea de continuidad con el video.
+  La frase "You came from the video on the July 31 THC rule change." es un **enlace** a
+  `https://www.youtube.com/watch?v=dYFH4IEx53g` (`target="_blank"`, `rel="noopener noreferrer"`),
+  seguida de "Now let's find out where you stand." en blanco semibold.
+- **Derecha:** "Free Consultation", ancla a `#consultation` (sección 9). Oculto bajo `sm`.
+
+> Originalmente la izquierda decía "Available for Federal Cases Nationwide · Houston, Texas"
+> y la continuidad era la sección 2, en su propia banda. Se fusionaron: mantener las dos
+> repetía la misma frase dos veces seguidas y en el mismo negro.
 
 ---
 
 ## 2. Continuidad desde YouTube
 
-Debajo del top bar. Una sola línea, con icono a la izquierda. CTA de continuidad con
-el video del que viene el visitante:
-
-> You came from the video on the July 31 THC rule change. **Everything below picks up
-> where it left off.**
+**Absorbida por la sección 1.** `sections/VideoContinuity.tsx` sigue en el repo sin usar,
+por si hay que devolverla a una banda propia.
 
 ---
 
-## 3. Navbar + Hero image
+## 3. Navbar + Hero image → `sections/Hero.tsx` + `Hero.module.css` + `ui/NavBar.tsx`
 
-Sección combinada:
+**Navbar:** logo "GARY TABAKMAN / ATTORNEY AT LAW", links y teléfono. El teléfono usa la
+misma tipografía que los links (`font-inter`, 12px, `tracking-[0.1em]`), en negritas y
+blanco pleno para que siga leyéndose como CTA. Fondo translúcido `bg-ink/30` — **no** sin
+fondo, como decía la versión original — y línea blanca inferior a todo lo ancho.
 
-- Navbar con el mismo estilo, pero **sin fondo detrás**.
-- División horizontal blanca debajo del navbar.
-- Hero image de fondo, con opacidad balanceada para que las opciones del navbar, el
-  headline y su descripción se lean con claridad.
-- **Lado izquierdo del hero:** título referente al video de YouTube de donde vino el CTA,
-  más una descripción.
+**Hero:** imagen de fondo full-bleed vía `next/image` (`fill` + `priority` + `sizes="100vw"`),
+bajo un velo diagonal que va de 82% ink a la izquierda a 18% a la derecha, más un degradado
+vertical y un glow naranja superior. Todo con `color-mix()` sobre tokens.
 
----
+**Izquierda:** eyebrow, regla naranja de 56×3, titular en mayúsculas (`font-display`),
+párrafo de contexto y el cierre de Gary en un bloque con borde izquierdo `accent`.
 
-## 4. Tres tips del caso
-
-Empieza debajo del hero, con **color sólido** (usar la colorimetría de `globals.css`).
-
-- Tres tips importantes relacionados con el caso específico.
-- Organizados en grid de tres columnas horizontales.
-- Línea vertical al lado izquierdo de la primera columna del grid.
+**Derecha:** el formulario de la sección 6.
 
 ---
 
-## 5. Resultados de casos de Gary
+## 4. Tres tips del caso → `sections/CaseTips.tsx`
 
-Estructura, en orden:
-
-1. Línea divisoria superior de color.
-2. Título.
-3. Grid de tres columnas horizontales con los números de las evidencias.
-4. Lista de dos columnas sobre subcasos particulares relacionados: primera columna el
-   número, segunda columna la descripción de ese conteo de casos. Cada fila separada por
-   una línea blanca horizontal inferior.
-5. Toda la sección lleva un borde tenue blanco, igual a los bordes inferiores de los
-   elementos listados.
-
-> Los números salen del guion. Si no están ahí, usar placeholders explícitos y avisar
-> (ver Prohibición 5 en `CLAUDE.md`).
+Color sólido `bg-ink`. Grid de tres columnas con **una línea vertical `accent` a la
+izquierda de la primera**. Los tres tips salen del guion: reclasificación de concentrados
+a Penalty Group 2, ausencia de cláusula de anterioridad, y posesión constructiva.
 
 ---
 
-## 6. Formulario flotante
+## 5. Resultados de casos de Gary → `sections/CaseResults.tsx`
 
-Posición: lado derecho, desde la altura del título dentro del hero image hasta terminar
-la sección de resultados. Cubre por su lado derecho la altura del hero y de la sección
-de color sólido debajo de este.
+Caja con borde tenue blanco (`line-cream`) y línea superior de 3px en `accent`. Dentro:
+título, grid de tres cifras, y lista de dos columnas (número · descripción) con línea
+blanca inferior por fila. Cierra con "Past results are not a guarantee of future outcomes."
 
-Color claro (colorimetría de `globals.css`). Cada elemento lleva icono a la izquierda,
-seguido del título de la sección, y debajo los campos con default text de relleno.
-
-**Campos:**
-
-1. Nombre — First and Last name
-2. Número de teléfono
-3. Correo electrónico
-4. Tipo de cargo
-   - Día en que ocurrió el crimen o cargo — selección por calendario flotante
-   - Condado en el que ocurrió el crimen o cargo — lista:
-     Harris · Fort Bend · Montgomery · Galveston · Brazoria · Waller · Liberty ·
-     Chambers · Other
-
-**A partir de aquí el contenido cambia según el crimen o cargo seleccionado.**
-Estructura habitual:
-
-1. Sección de fondo tenue con línea en el borde izquierdo y texto relacionado dentro.
-2. Sección con preguntas más específicas, con opciones clickeables ordenadas.
-3. Checklist donde se acepta enviar esta información.
-4. Botón de envío con el texto: **Call me within 5 minutes**
-5. Texto debajo del botón:
-   `I read these myself. Not a call center. Rather talk now? 713-429-1624` (enlace `tel:`)
+> ⚠ **Las cifras son de demo.** El guion no contiene ninguna cifra de resultados. Los
+> números actuales salen de `context/reference-proposal/`, que los marca como inventados
+> para el mock, y se pusieron a pedido expreso para la presentación al cliente. El archivo
+> lleva el aviso `⚠ CIFRAS DE DEMO — NO PUBLICAR SIN VERIFICAR`. Ver prohibición 5 de
+> `CLAUDE.md`.
 
 ---
 
-## 7. Memberships & Recognition
+## 6. Formulario flotante → `sections/CaseIntakeForm.tsx`
 
-Grid de 5 columnas. Cada espacio: imagen arriba, nombre debajo.
+Vive en la columna derecha del hero y se desborda hacia abajo sobre las secciones 4 y 5.
+Color claro sobre `bg-paper`. Cada bloque lleva icono a la izquierda (`ui/FormIcon.tsx`).
 
-```tsx
-<section className="relative overflow-hidden bg-ink border-b border-line-cream px-[46px] max-sm:px-[22px] py-[36px]">
-  <div className="absolute inset-0 bg-[radial-gradient(100%_100%_at_50%_0%,rgba(229,81,0,0.14),transparent_60%)]" />
-  <div className="relative z-[2] mx-auto max-w-[1400px]">
-    <span className="mb-7 inline-flex font-serif text-[12px] font-semibold tracking-[0.2em] uppercase text-white/90 whitespace-nowrap border-r border-line-cream pr-[30px]">
-      Memberships &amp; Recognition
-    </span>
-    <div className="grid grid-cols-2 justify-items-center gap-x-6 gap-y-8 sm:grid-cols-5 sm:gap-x-8 sm:gap-y-0">
-      {associations.map(({ abbr, name, logo }) => (
-        <div key={abbr} className="flex w-full max-w-[220px] flex-col items-center justify-start gap-[10px] text-center">
-          <img src={"/images/associations/" + logo} alt={name} className="h-[74px] w-[74px] object-contain sm:h-[86px] sm:w-[86px]" />
-          <span
-            key={abbr}
-            className="mt-1 block w-full text-white/92 text-center font-serif text-base font-semibold tracking-[0.01em]"
-          >
-            {name}
-          </span>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-```
+**Campos:** First name / Last name (dos campos en un grid) · teléfono · email · tipo de
+cargo · fecha (calendario nativo) · condado (Harris · Fort Bend · Montgomery · Galveston ·
+Brazoria · Waller · Liberty · Chambers · Other).
+
+**Luego:** bloque de fondo tenue con borde izquierdo y el texto de penalidades · preguntas
+específicas con opciones clickeables · checklist de envío · botón
+**"Call me within 5 minutes"** · y debajo
+`I read these myself. Not a call center. Rather talk now? 713-429-1624` (enlace `tel:`).
+
+Ver "Decisiones" para el mecanismo del traslape.
 
 ---
 
-## 8. Contenido del video
+## 7. Memberships & Recognition → `sections/Memberships.tsx`
 
-Fondo de color claro. Presenta la información relacionada al video, tomada del guion,
-dividida en subtítulos con el texto debajo.
+Grid de 5 columnas (2 en móvil): logo arriba, nombre debajo. Sobre `bg-ink` con capa de
+`radial-gradient`. Los cinco logos están en `public/images/associations/`; los nombres
+salen de la lista de badges de las propuestas de referencia.
 
----
+**Título:** centrado, `font-display text-[24px] tracking-[0.06em]`, `mb-20`. Sin el
+`border-r` que traía el diseño original.
 
-## 9. Formulario de consulta gratis
-
-**Encabezado:**
-
-```
-GARY TABAKMAN, PLLC
-Houston Criminal Law and Family Law
-
-Contact
-
-Phone
-713-429-1624
-
-Address
-Law Office of Gary Tabakman, PLLC
-4801 Woodway Drive, Suite 300 West
-Houston, Texas 77056
-```
-
-**Campos:** First and last name · email · phone · message
-
-**Checkboxes de confirmación:**
-- I have read the website disclaimer and privacy policy
-- I consent to receiving communication via SMS text
-
-**Botón:** Submit
+> Ubicada entre las secciones 8 y 9, no antes del contenido del video.
+>
+> `superlawyers-logo.svg` es un wordmark horizontal (576×127) metido en una caja cuadrada
+> de 74/86px con `object-contain`: se ve bastante más chico que sus cuatro vecinos
+> circulares. Es consecuencia del código original, no un bug.
 
 ---
 
-## 10. Footer
+## 8. Contenido del video → `sections/VideoContent.tsx`
 
-```tsx
-import Link from "next/link";
+Fondo claro (`bg-paper`). Es un **resumen** del guion, no su desarrollo completo:
 
-const ACCENT = "#E55100";
-const ACCENT_LIGHT = "#FF6B1A";
+1. Encabezado "What changed on July 31, and what didn't".
+2. Dos tarjetas comparativas — *Now controlled* (borde `accent`, fondo `orange/5`) y
+   *Not changed* (borde `ink-muted`, fondo blanco). El mock las distingue en rojo y verde,
+   que no existen en los tokens.
+3. Cuatro bloques cortos: *Why nobody warned you*, *The part almost nobody talks about*,
+   *You do not have to own it to be charged with it*, *Where these cases are actually won*.
+4. El descargo de Gary ("Nothing here is legal advice…"), que está en el guion.
 
-const criminalDefenseLinks = [
-  { label: "Federal Crimes", href: "/federal" },
-  { label: "State Crimes", href: "/state-crimes" },
-  { label: "Appeals & Post-Conviction", href: "/appeals" },
-  { label: "Parole", href: "/parole" },
-];
+---
 
-const firmLinks = [
-  { label: "Gary Tabakman", href: "/attorneys/gary-tabakman" },
-  { label: "Dennis Hester", href: "/attorneys/dennis-hester" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
-];
+## 9. Formulario de consulta gratis → `sections/ConsultationForm.tsx`
 
-export default function Footer() {
-  const year = new Date().getFullYear();
+Formulario centrado (`max-w-[720px]`) sobre `bg-ink`.
 
-  return (
-    <footer className="bg-[#0E0C08] px-6 pb-8 pt-16 text-[#fffbf8b8]">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-10 border-b border-[#fffbf824] pb-10 md:grid-cols-2 xl:grid-cols-[1.5fr_1fr_1fr_1fr]">
-          <div>
-            <p
-              className="text-sm leading-relaxed text-[#fffbf8b3]"
-              style={{ fontFamily: "var(--font-inter), sans-serif" }}
-            >
-              Law Office of Gary Tabakman, PLLC. Serving Texas state courts and
-              federal court nationwide.
-            </p>
-            <p
-              className="mt-3 text-base italic text-[#fffbf8de]"
-              style={{ fontFamily: "var(--font-inter), sans-serif" }}
-            >
-              You are not just another case.
-            </p>
-            <a
-              href="tel:7134291624"
-              className="mt-5 inline-block text-sm font-semibold tracking-[0.12em] uppercase"
-              style={{ color: ACCENT_LIGHT, fontFamily: "var(--font-inter), sans-serif" }}
-            >
-              713-429-1624
-            </a>
-          </div>
+**Cabecera, dentro del formulario y centrada:** "GARY TABAKMAN, PLLC" +
+"Houston Criminal Law and Family Law" + la línea de "Schedule a free consultation".
 
-          <div>
-            <h4
-              className="mb-4 text-[11px] uppercase tracking-[0.14em] text-[#fffbf880]"
-              style={{ fontFamily: "var(--font-inter), sans-serif" }}
-            >
-              Criminal Defense
-            </h4>
-            <div className="space-y-2.5">
-              {criminalDefenseLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block text-sm text-[#fffbf8b8] transition-colors hover:text-[#FF6B1A]"
-                  style={{ fontFamily: "var(--font-inter), sans-serif" }}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+**Dos bloques con icono a la izquierda:**
+- *Your information* — first name / last name (mismo grid) · email · phone
+- *Message* — textarea
 
-          <div>
-            <h4
-              className="mb-4 text-[11px] uppercase tracking-[0.14em] text-[#fffbf880]"
-              style={{ fontFamily: "var(--font-inter), sans-serif" }}
-            >
-              Firm
-            </h4>
-            <div className="space-y-2.5">
-              {firmLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block text-sm text-[#fffbf8b8] transition-colors hover:text-[#FF6B1A]"
-                  style={{ fontFamily: "var(--font-inter), sans-serif" }}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+**Checkboxes:** "I have read the website disclaimer and privacy policy" ·
+"I consent to receiving communication via SMS text". **Botón:** Submit.
 
-          <div>
-            <h4
-              className="mb-4 text-[11px] uppercase tracking-[0.14em] text-[#fffbf880]"
-              style={{ fontFamily: "var(--font-inter), sans-serif" }}
-            >
-              Contact
-            </h4>
-            <div
-              className="space-y-2.5 text-sm text-[#fffbf8b8]"
-              style={{ fontFamily: "var(--font-inter), sans-serif" }}
-            >
-              <a href="tel:7134291624" className="block transition-colors hover:text-[#FF6B1A]">
-                713-429-1624
-              </a>
-              <p>Fax 713-808-9444</p>
-              <a
-                href="mailto:Gary@GTlawfirm.com"
-                className="block transition-colors hover:text-[#FF6B1A]"
-              >
-                Gary@GTlawfirm.com
-              </a>
-              <p>
-                4801 Woodway Drive
-                <br />
-                Suite 300 West
-                <br />
-                Houston, TX 77056
-              </p>
-            </div>
-          </div>
-        </div>
+> El bloque "Contact / Phone / Address" que traía el diseño original se eliminó. **El
+> teléfono y la dirección hoy solo existen en el footer.**
 
-        <div
-          className="flex flex-col gap-3 py-6 text-[12px] tracking-[0.06em] text-[#fffbf873] md:flex-row md:items-center md:justify-between"
-          style={{ fontFamily: "var(--font-inter), sans-serif" }}
-        >
-          <p>
-            © {year} Gary Tabakman · All rights reserved ·
-            <span style={{ color: ACCENT_LIGHT }}> Content by Gary Tabakman</span>
-          </p>
-          <div className="flex items-center gap-3">
-            <Link href="/disclaimer-privacy" className="transition-colors hover:text-white">
-              Disclaimer & Privacy
-            </Link>
-            <span aria-hidden="true">·</span>
-            <Link href="/sitemap.xml" className="transition-colors hover:text-white">
-              Sitemap
-            </Link>
-          </div>
-        </div>
+---
 
-        <p
-          className="text-[11px] leading-relaxed text-[#fffbf85f]"
-          style={{ fontFamily: "var(--font-inter), sans-serif" }}
-        >
-          Attorney advertising. Prior results do not guarantee a similar outcome.
-          The information on this website is for general informational purposes
-          only and does not constitute legal advice or create an attorney-client
-          relationship.
-        </p>
-      </div>
-    </footer>
-  );
-}
-```
+## 10. Footer → `sections/Footer.tsx`
+
+Cuatro columnas sobre `#0E0C08`: descripción del despacho, Criminal Defense, Firm y
+Contact; fila de copyright con el año dinámico; y el disclaimer legal completo.
+
+Diferencias con el diseño original: sin Dennis Hester, sin la constante `ACCENT` (no se
+usaba) y con `Container` en vez de `px-6 max-w-7xl`, para alinear con el resto de la página.
+
+---
+
+## Decisiones que costaron varias iteraciones
+
+Lo que sigue se resolvió a base de intentos. No re-litigar sin leer el porqué.
+
+**El formulario flotante no puede ser una celda del grid.**
+Puesto como celda normal, el grid iguala la altura de la fila a la del elemento más alto —
+y el formulario mide ~1250px. Resultado: la imagen del hero se estiraba hasta abajo del
+formulario. Va en `xl:absolute xl:top-[120px] xl:right-0 xl:w-[448px]` dentro de su celda,
+que queda `relative`. Al salir del flujo, **la altura del hero la define solo la columna
+izquierda**. Los 120px son la altura exacta del titular (`pt-14` + eyebrow + regla + margen).
+
+**El traslape necesita orden de pintado explícito.**
+El hero va en `z-10` y las secciones 4 y 5 en `z-0`, o el formulario desbordado queda
+tapado por ellas. Además el `overflow: hidden` vive en `.backdrop`, no en `.hero`: en
+`.hero` recortaba el formulario.
+
+**El hueco entre el texto del hero y el formulario.**
+Con medidas de `46ch`/`44ch` el texto ocupaba ~370px de una columna de ~800px y dejaba casi
+500px muertos. Se resolvió con dos palancas juntas: ensanchar las medidas
+(titular `20ch`, párrafos `70ch`/`66ch`, cuerpo a 18px) **y** cerrar el gap del hero a
+`xl:gap-10`. En sentido inverso, tips y resultados quedaron en `xl:gap-28`.
+
+**La imagen del hero: manda el ancho.**
+Es full-bleed (`100vw`), no los 1400px del contenedor. Con `object-fit: cover` sobre una
+banda de ~3:1 desde una fuente 16:9, la escala la decide el ancho y **solo se recorta en
+vertical** — la posición horizontal no tiene ningún efecto. **Mínimo 2560px de ancho**;
+3840 es el techo (el `srcset` de Next no genera más). Con menos hay que compensar con
+`blur()`, que es una muleta, no una solución.
+
+> **Estado actual:** el asset es de **1620×910**, por debajo de ese mínimo, y se mantiene
+> así por decisión tomada. `Hero.module.css` lo compensa **bajando la opacidad de la foto
+> a `0.72`** en vez de con `blur()`: fundida contra el ink del fondo, los artefactos del
+> reescalado dejan de leerse y la imagen queda como textura. Si algún día entra una imagen
+> de 2560px o más, se sube la opacidad.
+
+**Estilos globales fuera de `@layer base` rompen la página entera.**
+Ver la sección correspondiente en `CLAUDE.md`. El `* { margin: 0; padding: 0 }` de
+create-next-app anulaba **todas** las utilidades de espaciado de Tailwind.
+
+**No dejar `next dev` corriendo.**
+Next 16 se niega a arrancar un segundo dev server sobre el mismo directorio y sale con
+`[ELIFECYCLE] exit code 1`, rompiendo la terminal del usuario.
 
 ---
 
 ## Criterios de aceptación
 
-- Las 10 secciones existen y están en el orden de arriba.
-- Cero colores fuera de los design tokens.
-- Cero copy fuera del guion; los datos faltantes quedan como placeholder explícito.
-- `npm run lint`, `npx tsc --noEmit` y `npm run build` pasan.
-- Render correcto a 1440px y 375px.
+- Las secciones existen y respetan el orden de render de arriba (que **no** es el orden
+  numérico).
+- Cero colores fuera de los design tokens, salvo los literales heredados del código
+  original documentados en la prohibición 4 de `CLAUDE.md`.
+- Cero copy fuera del guion y de las propuestas derivadas de él. Única excepción de datos:
+  las cifras de demo de la sección 5, marcadas en el propio archivo.
+- El disclaimer legal del footer, intacto.
+- `pnpm lint` (0 errores), `npx tsc --noEmit` y `pnpm build` pasan.
+- Render correcto a 1440px y 375px — lo verifica el usuario.
 - Ningún formulario envía ni valida.

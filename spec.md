@@ -237,7 +237,8 @@ vertical** — la posición horizontal no tiene ningún efecto. **Mínimo 2560px
 3840 es el techo (el `srcset` de Next no genera más). Con menos hay que compensar con
 `blur()`, que es una muleta, no una solución.
 
-> **Estado actual:** el asset es de **1620×910**, por debajo de ese mínimo, y se mantiene
+> **Estado actual:** el asset es `Gary-Background.webp`, de **1916×821**, por debajo de ese
+> mínimo, y se mantiene
 > así por decisión tomada. `Hero.module.css` lo compensa **bajando la opacidad de la foto
 > a `0.72`** en vez de con `blur()`: fundida contra el ink del fondo, los artefactos del
 > reescalado dejan de leerse y la imagen queda como textura. Si algún día entra una imagen

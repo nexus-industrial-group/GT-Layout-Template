@@ -9,7 +9,7 @@ export default function Hero({ floatingForm }: { floatingForm?: ReactNode }) {
     <section id="top" className={styles.hero}>
       <div className={styles.backdrop} aria-hidden="true">
         <Image
-          src="/images/hero/THC.webp"
+          src="/images/hero/Gary-Background.webp"
           alt=""
           fill
           priority

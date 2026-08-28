@@ -52,8 +52,13 @@ const questions = [
   },
 ];
 
+// Los campos van en garamond (font-serif), no en inter: es la tipografía de
+// cuerpo del sitio y lo que el usuario escribe es texto de cuerpo. Garamond
+// tiene la altura-x más baja que Inter, así que 14px se leía chico: se
+// compensa a 16px, que además evita el zoom automático de iOS al enfocar.
+// Las etiquetas se quedan en inter — son labels, y ese es su uso asignado.
 const fieldClass =
-  "w-full rounded-[3px] border border-line bg-white px-3 py-2.5 font-inter text-[14px] text-ink-soft outline-none placeholder:text-ink-muted focus:border-accent";
+  "w-full rounded-[3px] border border-line bg-white px-3 py-2.5 font-serif text-[16px] text-ink-soft outline-none placeholder:text-ink-muted focus:border-accent";
 
 const labelClass =
   "mb-1.5 block font-inter text-[11px] font-semibold tracking-[0.08em] text-ink-muted uppercase";
@@ -81,17 +86,21 @@ export default function CaseIntakeForm() {
     // Maqueta: sin action, sin onSubmit, sin validación.
     <form className="rounded-[5px] border border-line bg-paper shadow-[0_18px_44px_rgba(20,17,13,0.34)]">
       <div className="border-b border-line bg-white px-6 py-5">
-        <p className="font-display text-[20px] leading-tight font-semibold text-ink">
-          What did they actually find?
+        {/* El nombre no se enfatiza con negritas: el contraste lo dan la escala,
+            la tipografía y el color. "I'm" retrocede a serif chico y muted;
+            el nombre se queda solo con la display a tamaño pleno sobre ink. */}
+        <p className="font-display text-[22px] leading-tight text-ink">
+          <span className="font-serif text-[15px] text-ink-muted">I’m </span>
+          Gary Tabakman
         </p>
         <p className="mt-1.5 font-serif text-[15px] leading-snug text-ink-muted">
-          This one answer decides misdemeanor or felony. Start here.
+          Whatever you tell me stays with me.
         </p>
       </div>
 
       <div className="px-6 py-6">
         {/* 1–3. Datos de contacto */}
-        <BlockHeading icon="user">Your information</BlockHeading>
+        <BlockHeading icon="user">How can I reach out to you?</BlockHeading>
         <div className="space-y-3.5">
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -143,7 +152,7 @@ export default function CaseIntakeForm() {
 
         {/* 4. Tipo de cargo, fecha y condado */}
         <div className="mt-7 border-t border-line pt-6">
-          <BlockHeading icon="file">The charge</BlockHeading>
+          <BlockHeading icon="file">What happened?</BlockHeading>
           <div className="space-y-3.5">
             <div>
               <label className={labelClass} htmlFor="intake-charge">
@@ -212,7 +221,7 @@ export default function CaseIntakeForm() {
                     <button
                       key={option}
                       type="button"
-                      className="rounded-[3px] border border-line-strong bg-white px-3 py-2 font-inter text-[13px] text-ink-soft transition-colors hover:border-accent hover:text-ink"
+                      className="rounded-[3px] border border-line-strong bg-white px-3 py-2 font-serif text-[15px] text-ink-soft transition-colors hover:border-accent hover:text-ink"
                     >
                       {option}
                     </button>

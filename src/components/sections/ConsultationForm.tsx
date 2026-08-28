@@ -1,8 +1,10 @@
 import Container from "@/components/ui/Container";
 import FormIcon, { type FormIconName } from "@/components/ui/FormIcon";
 
+// Mismo criterio que en CaseIntakeForm: campos en garamond a 16px, etiquetas
+// en inter.
 const fieldClass =
-  "w-full rounded-[3px] border border-line-cream bg-ink-soft px-3.5 py-3 font-inter text-[14px] text-white outline-none placeholder:text-white/40 focus:border-accent";
+  "w-full rounded-[3px] border border-line-cream bg-ink-soft px-3.5 py-3 font-serif text-[16px] text-white outline-none placeholder:text-white/40 focus:border-accent";
 
 const labelClass =
   "mb-1.5 block font-inter text-[11px] font-semibold tracking-[0.08em] text-white/50 uppercase";

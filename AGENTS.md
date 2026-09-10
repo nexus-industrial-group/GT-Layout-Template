@@ -21,14 +21,19 @@ tocar cualquier archivo, y `spec.md` para la tarea actual.
   Todo estilo global va dentro de `@layer base` — una regla sin capa le gana a las
   utilidades de Tailwind y rompe el espaciado de la página entera.
 - **Contenido:** únicamente el guion en `context/`. Nada inventado — en especial resultados
-  de casos, cifras o testimonios: es publicidad legal. Hay **una** excepción autorizada y
-  documentada (cifras de demo en `CaseResults.tsx`, marcadas en el propio archivo con
-  `⚠ CIFRAS DE DEMO — NO PUBLICAR SIN VERIFICAR`). No la extiendas a otras secciones.
+  de casos, cifras o testimonios: es publicidad legal. La página hoy **no muestra ninguna
+  cifra**: la única sección que las tenía (`CaseResults.tsx`, sección 5) salió del render,
+  aunque el archivo sigue en el repo con su aviso
+  `⚠ CIFRAS DE DEMO — NO PUBLICAR SIN VERIFICAR`. No borres ese aviso ni extiendas la
+  excepción a otras secciones.
 - **Estructura:** `spec.md` describe el layout construido, sección por sección, y el porqué
   de las decisiones que se re-litigaron varias veces (traslape del formulario flotante,
   gaps del grid, tamaño mínimo de la imagen del hero, capas de CSS). Léelo antes de tocar
   layout. El orden de render **no** es el orden numérico de las secciones. **El código es
   la fuente de verdad.** No introduzcas cambios estructurales nuevos sin consultar.
+- **Contenido oculto, no borrado:** varios bloques se comentaron a pedido del cliente en
+  vez de eliminarse, para poder revertirlos en una edición. Están listados en `spec.md`
+  §8. No los borres ni los "limpies".
 - **Verificación:** `pnpm lint`, `npx tsc --noEmit`, `pnpm build` deben pasar antes de dar
   por terminada cualquier sección. La revisión visual a 1440px y 375px la hace el usuario.
   No dejes servidores `next dev` corriendo.

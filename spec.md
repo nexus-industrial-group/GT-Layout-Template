@@ -110,8 +110,9 @@ párrafo de contexto y el cierre de Gary en un bloque con borde izquierdo `accen
 
 ## 4. Tres tips del caso → `sections/CaseTips.tsx`
 
-Color sólido `bg-ink`. Lleva `xl:pb-[75px]` — es el carril de ink para la cola del
-formulario flotante, ver "Decisiones". Los tres tips van en **tres filas, no en tres
+Color sólido `bg-ink`. El padding vertical (`pt-[49px] pb-[49px] lg:pt-[65px]
+lg:pb-[65px] xl:pb-[75px]`) se afinó a ojo contra el render: el `xl:pb` es el carril de
+ink para la cola del formulario flotante, ver "Decisiones". Los tres tips van en **tres filas, no en tres
 columnas**, con **una línea vertical `accent` a la izquierda de las tres**. El cuerpo lleva
 `max-w-[70ch]` — a lo ancho de la columna izquierda, una línea sin medida se pasa de los
 85 caracteres. Los tres tips salen del guion: reclasificación de concentrados
@@ -144,14 +145,17 @@ se nombran con `aria-label`, porque el placeholder no cuenta como nombre accesib
   columnas (Harris · Fort Bend · Montgomery · Galveston · Brazoria · Waller · Liberty ·
   Chambers · Other).
 
-**Luego:** bloque de fondo tenue con borde izquierdo y el texto de penalidades · preguntas
-específicas con opciones clickeables · checklist de envío — que cierra con
+**Luego:** preguntas específicas con opciones clickeables · checklist de envío — que
+cierra con
 `I read these myself. Not a call center. Rather talk now? Call 713-429-1624 within 5
 minutes.` (enlace `tel:`) en el mismo párrafo del consentimiento · y el botón
 **"Call me within 5 minutes"** al final.
 
 > El `<label>` de ese párrafo envuelve **solo** la frase de consentimiento, no el párrafo
 > entero: si lo envolviera, un clic en el teléfono marcaría también la casilla.
+
+El bloque de fondo tenue con el texto de penalidades (*"Why the answer matters"*) está
+**comentado**, no borrado — ver la tabla de la sección 8.
 
 Ver "Decisiones" para el mecanismo del traslape.
 
@@ -176,15 +180,47 @@ salen de la lista de badges de las propuestas de referencia.
 
 ## 8. Contenido del video → `sections/VideoContent.tsx`
 
-Fondo claro (`bg-paper`). Es un **resumen** del guion, no su desarrollo completo:
+Fondo claro (`bg-paper`). Es un **resumen** del guion, no su desarrollo completo. Lo que
+se renderiza hoy:
 
-1. Encabezado "What changed on July 31, and what didn't".
-2. Dos tarjetas comparativas — *Now controlled* (borde `accent`, fondo `orange/5`) y
-   *Not changed* (borde `ink-muted`, fondo blanco). El mock las distingue en rojo y verde,
-   que no existen en los tokens.
-3. Cuatro bloques cortos: *Why nobody warned you*, *The part almost nobody talks about*,
-   *You do not have to own it to be charged with it*, *Where these cases are actually won*.
-4. El descargo de Gary ("Nothing here is legal advice…"), que está en el guion.
+1. Encabezado **"Where you stand right now"** (`h2`, `font-display`,
+   `text-[clamp(1.75rem,2.6vw,2.25rem)]`).
+2. Dos tarjetas comparativas — *Now Controlled (Felony Risk)* (borde `accent`, fondo
+   `orange/5`) y *Unchanged (Legal or Misdemeanor)* (borde `ink-muted`, fondo blanco). El
+   mock las distingue en rojo y verde, que no existen en los tokens.
+3. Un solo bloque, **"Where these cases are actually won"**, partido en dos columnas:
+   título y primer párrafo a la izquierda, el párrafo de *Furthermore* a la derecha. El
+   título usa la misma escala que el `h2` de la sección.
+
+### Contenido oculto, no borrado
+
+A pedido del cliente, estos bloques quedaron **comentados en su sitio** en vez de
+eliminarse, para poder revertirlos en una edición. **No los borres ni los "limpies".**
+
+| Qué | Dónde |
+|---|---|
+| Eyebrow *"From the video"* | `VideoContent.tsx` |
+| *"Why nobody warned you"* | `VideoContent.tsx`, array `points` |
+| *"You do not have to own it to be charged with it"* | `VideoContent.tsx`, array `points` |
+| Última fila de cada tarjeta (penalidades de PG2 / dos onzas de flower) | `VideoContent.tsx` |
+| Descargo *"Nothing here is legal advice…"* | `VideoContent.tsx` |
+| Bloque *"Why the answer matters"* | `CaseIntakeForm.tsx` |
+
+> Dos apuntes al descomentar: el `h2` perdió su `mt-5` cuando se ocultó el eyebrow, así
+> que hay que devolvérselo si el eyebrow vuelve; y *"You do not have to own it"* repite el
+> tip 03 de la sección 4, mientras que *"Why nobody warned you"* no está en ninguna otra
+> parte de la página — descomentarlo es la única forma de recuperar ese contenido.
+
+### Dos ramas de render
+
+`points.map` tiene dos ramas: la de `wide` (dos columnas, un `<p>` por entrada de `body`)
+y la normal, de una columna, que separa las entradas de `body` con dos `<br />`. La rama
+normal hoy no la usa nadie — existe para que descomentar cualquiera de los dos bloques
+cortos lo devuelva exactamente como estaba.
+
+Las filas del bloque `wide` se fijan a mano (`md:row-start-*`) en vez de dejar que el grid
+las acomode: así los dos párrafos arrancan a la misma altura aunque solo el de la
+izquierda tenga título encima.
 
 ---
 

@@ -7,7 +7,8 @@ const navLinks = [
   { label: "Attorney Profiles", href: "#top" },
   { label: "Criminal Defense", href: "#top" },
   { label: "Blog", href: "#top" },
-  { label: "Contact", href: "#consultation" },
+  // #consultation (sección 9) salió del render; el link sube al hero.
+  { label: "Contact", href: "#top" },
 ];
 
 export default function NavBar() {

@@ -145,8 +145,10 @@ esto antes que nada.
   (`max-w-[1400px]` · `px-[46px]` · `px-[22px]` en móvil, tomado del código de `spec.md` §7).
   Toda sección lo usa para que los bordes izquierdos alineen. No inventes otro contenedor.
 - **El prototipo es una sola página.** La navegación interna son anclas (`#top`,
-  `#consultation`, `#video-content`) con `<a>`; `next/link` solo se usa en el footer, que
-  apunta a rutas del sitio real. `tel:` y `mailto:` con `<a>` nativo.
+  `#video-content`) con `<a>`; `next/link` solo se usa en el footer, que apunta a rutas
+  del sitio real. `tel:` y `mailto:` con `<a>` nativo. Un ancla solo puede apuntar a un
+  `id` que exista en el render: al sacar una sección de `page.tsx`, revisa quién la
+  apuntaba (fue el caso de `#consultation`, sección 9).
 - Todo el copy visible al usuario va en **inglés** (el sitio es para clientes en Texas).
   Los comentarios de código pueden ir en español.
 - Imágenes en `public/images/`, agrupadas por sección (`public/images/hero/`,
@@ -195,7 +197,7 @@ esto antes que nada.
 
 El orden de render vive en `src/app/page.tsx` y **no es el orden numérico** de las
 secciones: la 8 va antes que la 7, la 6 flota sobre 3–4, la 2 quedó absorbida por la 1 y
-la 5 salió del render.
+las 5 y 9 salieron del render.
 
 `spec.md` describe cada sección, apunta a su componente y — en "Decisiones que costaron
 varias iteraciones" — explica el porqué de los acuerdos que se re-litigaron varias veces

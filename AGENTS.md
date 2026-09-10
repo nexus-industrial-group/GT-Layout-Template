@@ -15,7 +15,9 @@ tocar cualquier archivo, y `spec.md` para la tarea actual.
   TypeScript + Tailwind v4, para landings de un despacho de abogados penalistas en Houston
   (Gary Tabakman, PLLC). Es **una sola página**; la navegación interna son anclas.
 - **Alcance:** solo layout estático. Sin backend, sin lógica, sin estado, sin envío de
-  formularios.
+  formularios. Hoy queda **un solo formulario en la página**: el de intake (sección 6),
+  que flota en el hero. El de consulta gratis (sección 9, `ConsultationForm.tsx`) salió
+  del render.
 - **Gestor de paquetes:** pnpm. No uses `npm install`.
 - **Estilos:** únicamente los design tokens de `globals.css`. Ningún color nuevo.
   Todo estilo global va dentro de `@layer base` — una regla sin capa le gana a las
@@ -29,8 +31,13 @@ tocar cualquier archivo, y `spec.md` para la tarea actual.
 - **Estructura:** `spec.md` describe el layout construido, sección por sección, y el porqué
   de las decisiones que se re-litigaron varias veces (traslape del formulario flotante,
   gaps del grid, tamaño mínimo de la imagen del hero, capas de CSS). Léelo antes de tocar
-  layout. El orden de render **no** es el orden numérico de las secciones. **El código es
-  la fuente de verdad.** No introduzcas cambios estructurales nuevos sin consultar.
+  layout. El orden de render **no** es el orden numérico de las secciones, y **no todas
+  las secciones se renderizan**: la 2 quedó absorbida por la 1, y la 5 (`CaseResults`) y
+  la 9 (`ConsultationForm`) salieron del render — sus componentes siguen en el repo sin
+  usar, no los borres. Al sacar una sección, revisa que ningún ancla apunte a su `id`:
+  con la 9 fuera, el CTA del top bar y el link *Contact* del navbar pasaron de
+  `#consultation` a `#top`. **El código es la fuente de verdad.** No introduzcas cambios
+  estructurales nuevos sin consultar.
 - **Contenido oculto, no borrado:** varios bloques se comentaron a pedido del cliente en
   vez de eliminarse, para poder revertirlos en una edición. Están listados en `spec.md`
   §8. No los borres ni los "limpies".

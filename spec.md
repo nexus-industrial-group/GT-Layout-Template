@@ -55,12 +55,12 @@ y `xl:gap-28` en tips (aire contra el formulario).
 4  Tres tips del caso
 8  Contenido del video
 7  Memberships & Recognition
-9  Formulario de consulta gratis
 10 Footer
 ```
 
 **6** (formulario de intake) flota sobre 3–4. **2** quedó absorbida por **1**.
-**5** se quitó.
+**5** y **9** se quitaron — con la 9 fuera, el único formulario de la página es el
+flotante de la sección 6.
 
 La numeración se conserva para poder rastrear cada sección contra su versión original.
 El orden de render vive en `src/app/page.tsx`.
@@ -75,7 +75,8 @@ Sticky, `z-50`, sobre `#14110D`.
   La frase "You came from the video on the July 31 THC rule change." es un **enlace** a
   `https://www.youtube.com/watch?v=dYFH4IEx53g` (`target="_blank"`, `rel="noopener noreferrer"`),
   seguida de "Now let's find out where you stand." en blanco semibold.
-- **Derecha:** "Free Consultation", ancla a `#consultation` (sección 9). Oculto bajo `sm`.
+- **Derecha:** "Free Consultation", ancla a `#top` (hero). Oculto bajo `sm`. Apuntaba a
+  `#consultation` (sección 9) hasta que esa sección salió del render.
 
 > Originalmente la izquierda decía "Available for Federal Cases Nationwide · Houston, Texas"
 > y la continuidad era la sección 2, en su propia banda. Se fusionaron: mantener las dos
@@ -226,6 +227,15 @@ izquierda tenga título encima.
 
 ## 9. Formulario de consulta gratis → `sections/ConsultationForm.tsx`
 
+**Removida del render** a pedido del usuario. `sections/ConsultationForm.tsx` sigue en el
+repo sin usar, por si hay que devolverla. Con la sección fuera, el ancla `#consultation`
+deja de existir en la página: el CTA **Free Consultation** del top bar y el link
+**Contact** del navbar apuntan ahora a `#top`, es decir al hero, donde vive el formulario
+de intake de la sección 6 — el único que queda. Si la sección vuelve al render, hay que
+devolver esas dos anclas a `#consultation`.
+
+Lo que describe el resto de esta sección es el componente tal como quedó:
+
 Formulario centrado (`max-w-[720px]`) sobre `bg-ink`.
 
 **Cabecera, dentro del formulario y centrada:** "GARY TABAKMAN, PLLC" +
@@ -300,6 +310,9 @@ reserva la pista de 448px, así que se encimaba con su texto. Se compensa con
 flujo y no sobra nada. **El valor es un ajuste visual, no un cálculo exacto** — si la
 altura del formulario, del titular del hero o de los tips cambia, hay que re-tunearlo
 mirando el render a 1440px.
+>
+> Quitar la sección **9** no toca este cálculo — está muy por debajo del traslape —, pero
+> sí cambia el cierre de la página, que ahora va `Memberships` → `Footer`.
 
 **Estilos globales fuera de `@layer base` rompen la página entera.**
 Ver la sección correspondiente en `CLAUDE.md`. El `* { margin: 0; padding: 0 }` de
@@ -322,4 +335,5 @@ Next 16 se niega a arrancar un segundo dev server sobre el mismo directorio y sa
 - El disclaimer legal del footer, intacto.
 - `pnpm lint` (0 errores), `npx tsc --noEmit` y `pnpm build` pasan.
 - Render correcto a 1440px y 375px — lo verifica el usuario.
-- Ningún formulario envía ni valida.
+- Ningún formulario envía ni valida (hoy solo queda el de la sección 6).
+- Ningún ancla de la página apunta a un `id` que no exista en el render.

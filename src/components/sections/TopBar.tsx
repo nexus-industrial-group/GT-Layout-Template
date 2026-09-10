@@ -38,9 +38,11 @@ export default function TopBar() {
             className="hidden items-center gap-6 uppercase sm:flex"
             style={{ fontFamily: "var(--font-inter), sans-serif" }}
           >
-            {/* Ancla a la sección 9 (formulario de consulta gratis) */}
+            {/* Apuntaba a la sección 9 (#consultation); esa sección salió del
+                render, así que ahora sube al hero, donde vive el formulario de
+                intake de la sección 6. */}
             <a
-              href="#consultation"
+              href="#top"
               className="whitespace-nowrap transition-colors hover:text-white"
             >
               Free Consultation

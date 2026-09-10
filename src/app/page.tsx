@@ -1,6 +1,5 @@
 import CaseIntakeForm from "@/components/sections/CaseIntakeForm";
 import CaseTips from "@/components/sections/CaseTips";
-import ConsultationForm from "@/components/sections/ConsultationForm";
 import Footer from "@/components/sections/Footer";
 import Hero from "@/components/sections/Hero";
 import Memberships from "@/components/sections/Memberships";
@@ -36,8 +35,12 @@ export default function Home() {
             y antes del formulario, no en el orden numérico de spec.md */}
         <Memberships />
 
-        {/* 9. Formulario de consulta gratis */}
-        <ConsultationForm />
+        {/* 9. Formulario de consulta gratis — quitada del render a pedido del
+            usuario. El componente ConsultationForm sigue en el repo sin usar,
+            por si hay que devolverla. Con la sección fuera, el ancla
+            #consultation deja de existir: el CTA del top bar y el link
+            "Contact" del navbar apuntan a #top (hero), donde vive el
+            formulario de intake de la sección 6. */}
       </main>
 
       {/* 10. Footer */}

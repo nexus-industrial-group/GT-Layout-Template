@@ -33,12 +33,6 @@ export default function Footer() {
               Law Office of Gary Tabakman, PLLC. Serving Texas state courts and
               federal court nationwide.
             </p>
-            <p
-              className="mt-3 text-base italic text-[#fffbf8de]"
-              style={{ fontFamily: "var(--font-inter), sans-serif" }}
-            >
-              You are not just another case.
-            </p>
           </div>
 
           <div>

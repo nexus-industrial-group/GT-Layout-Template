@@ -26,15 +26,15 @@ Tres piezas compartidas. Cambiar cualquiera afecta a varias secciones a la vez.
 `max-w-[1400px]` · `px-[46px]` · `px-[22px]` bajo `sm`. Toda sección lo usa, incluido el
 footer. Es lo que hace que los bordes izquierdos alineen de arriba a abajo.
 
-**2. Grid de dos columnas — hero, tips y resultados**
+**2. Grid de dos columnas — hero y tips**
 
 ```
 xl:grid-cols-[minmax(0,1fr)_448px]
 ```
 
-La pista de 448px queda **reservada y vacía** en las secciones 4 y 5: es el carril por el
-que baja el formulario flotante. Las tres secciones deben declarar el mismo
-`grid-template`, o el borde izquierdo del contenido deja de alinear entre ellas.
+La pista de 448px queda **reservada y vacía** en la sección 4: es el carril por el que baja
+el formulario flotante. Las dos secciones deben declarar el mismo `grid-template`, o el
+borde izquierdo del contenido deja de alinear entre ellas.
 
 **3. Breakpoint del traslape — `xl` (1280px)**
 
@@ -43,7 +43,7 @@ del hero. No es `lg`: a 1024px la columna izquierda quedaba en ~420px y el grid 
 tips salía en columnas de 118px.
 
 Los *gaps* son distintos a propósito: `xl:gap-10` en el hero (texto pegado al formulario)
-y `xl:gap-28` en tips y resultados (aire contra el formulario).
+y `xl:gap-28` en tips (aire contra el formulario).
 
 ---
 
@@ -53,14 +53,14 @@ y `xl:gap-28` en tips y resultados (aire contra el formulario).
 1  Top bar (sticky, incluye la continuidad del video)
 3  Navbar + Hero image
 4  Tres tips del caso
-5  Resultados de casos de Gary
 8  Contenido del video
 7  Memberships & Recognition
 9  Formulario de consulta gratis
 10 Footer
 ```
 
-**6** (formulario de intake) flota sobre 3–5. **2** quedó absorbida por **1**.
+**6** (formulario de intake) flota sobre 3–4. **2** quedó absorbida por **1**.
+**5** se quitó.
 
 La numeración se conserva para poder rastrear cada sección contra su versión original.
 El orden de render vive en `src/app/page.tsx`.
@@ -110,39 +110,48 @@ párrafo de contexto y el cierre de Gary en un bloque con borde izquierdo `accen
 
 ## 4. Tres tips del caso → `sections/CaseTips.tsx`
 
-Color sólido `bg-ink`. Grid de tres columnas con **una línea vertical `accent` a la
-izquierda de la primera**. Los tres tips salen del guion: reclasificación de concentrados
+Color sólido `bg-ink`. Lleva `xl:pb-[75px]` — es el carril de ink para la cola del
+formulario flotante, ver "Decisiones". Los tres tips van en **tres filas, no en tres
+columnas**, con **una línea vertical `accent` a la izquierda de las tres**. El cuerpo lleva
+`max-w-[70ch]` — a lo ancho de la columna izquierda, una línea sin medida se pasa de los
+85 caracteres. Los tres tips salen del guion: reclasificación de concentrados
 a Penalty Group 2, ausencia de cláusula de anterioridad, y posesión constructiva.
 
 ---
 
-## 5. Resultados de casos de Gary → `sections/CaseResults.tsx`
+## 5. Resultados de casos de Gary
 
-Caja con borde tenue blanco (`line-cream`) y línea superior de 3px en `accent`. Dentro:
-título, grid de tres cifras, y lista de dos columnas (número · descripción) con línea
-blanca inferior por fila. Cierra con "Past results are not a guarantee of future outcomes."
-
-> ⚠ **Las cifras son de demo.** El guion no contiene ninguna cifra de resultados. Los
-> números actuales salen de `context/reference-proposal/`, que los marca como inventados
-> para el mock, y se pusieron a pedido expreso para la presentación al cliente. El archivo
-> lleva el aviso `⚠ CIFRAS DE DEMO — NO PUBLICAR SIN VERIFICAR`. Ver prohibición 5 de
-> `CLAUDE.md`.
+**Removida del render** a pedido del usuario. `sections/CaseResults.tsx` sigue en el repo
+sin usar, por si hay que devolverla; conserva su aviso `⚠ CIFRAS DE DEMO — NO PUBLICAR SIN
+VERIFICAR`, porque sus números nunca se verificaron contra los expedientes de Gary. Si
+vuelve al render, siguen aplicando la prohibición 5 de `CLAUDE.md` y la advertencia del
+propio archivo.
 
 ---
 
 ## 6. Formulario flotante → `sections/CaseIntakeForm.tsx`
 
-Vive en la columna derecha del hero y se desborda hacia abajo sobre las secciones 4 y 5.
+Vive en la columna derecha del hero y se desborda hacia abajo sobre la sección 4.
 Color claro sobre `bg-paper`. Cada bloque lleva icono a la izquierda (`ui/FormIcon.tsx`).
 
-**Campos:** First name / Last name (dos campos en un grid) · teléfono · email · tipo de
-cargo · fecha (calendario nativo) · condado (Harris · Fort Bend · Montgomery · Galveston ·
-Brazoria · Waller · Liberty · Chambers · Other).
+**Campos**, agrupados bajo **una sola etiqueta por grupo** — los inputs sin label propio
+se nombran con `aria-label`, porque el placeholder no cuenta como nombre accesible:
+
+- *First name & Last name* — los dos campos en un grid de dos columnas.
+- *Phone number & Email* — teléfono arriba, email debajo.
+- *Type of charge* — select, con `What was found?` de placeholder.
+- *Date it happened & County* — fecha (calendario nativo) y condado en un grid de dos
+  columnas (Harris · Fort Bend · Montgomery · Galveston · Brazoria · Waller · Liberty ·
+  Chambers · Other).
 
 **Luego:** bloque de fondo tenue con borde izquierdo y el texto de penalidades · preguntas
-específicas con opciones clickeables · checklist de envío · botón
-**"Call me within 5 minutes"** · y debajo
-`I read these myself. Not a call center. Rather talk now? 713-429-1624` (enlace `tel:`).
+específicas con opciones clickeables · checklist de envío — que cierra con
+`I read these myself. Not a call center. Rather talk now? Call 713-429-1624 within 5
+minutes.` (enlace `tel:`) en el mismo párrafo del consentimiento · y el botón
+**"Call me within 5 minutes"** al final.
+
+> El `<label>` de ese párrafo envuelve **solo** la frase de consentimiento, no el párrafo
+> entero: si lo envolviera, un clic en el teléfono marcaría también la casilla.
 
 Ver "Decisiones" para el mecanismo del traslape.
 
@@ -187,7 +196,8 @@ Formulario centrado (`max-w-[720px]`) sobre `bg-ink`.
 "Houston Criminal Law and Family Law" + la línea de "Schedule a free consultation".
 
 **Dos bloques con icono a la izquierda:**
-- *Your information* — first name / last name (mismo grid) · email · phone
+- *Your information* — mismas agrupaciones que el intake: *First name & Last name* en un
+  grid de dos columnas y *Phone number & Email* apilados, teléfono arriba
 - *Message* — textarea
 
 **Checkboxes:** "I have read the website disclaimer and privacy policy" ·
@@ -220,15 +230,15 @@ que queda `relative`. Al salir del flujo, **la altura del hero la define solo la
 izquierda**. Los 120px son la altura exacta del titular (`pt-14` + eyebrow + regla + margen).
 
 **El traslape necesita orden de pintado explícito.**
-El hero va en `z-10` y las secciones 4 y 5 en `z-0`, o el formulario desbordado queda
-tapado por ellas. Además el `overflow: hidden` vive en `.backdrop`, no en `.hero`: en
+El hero va en `z-10` y la sección 4 en `z-0`, o el formulario desbordado queda tapado por
+ella. Además el `overflow: hidden` vive en `.backdrop`, no en `.hero`: en
 `.hero` recortaba el formulario.
 
 **El hueco entre el texto del hero y el formulario.**
 Con medidas de `46ch`/`44ch` el texto ocupaba ~370px de una columna de ~800px y dejaba casi
 500px muertos. Se resolvió con dos palancas juntas: ensanchar las medidas
 (titular `20ch`, párrafos `70ch`/`66ch`, cuerpo a 18px) **y** cerrar el gap del hero a
-`xl:gap-10`. En sentido inverso, tips y resultados quedaron en `xl:gap-28`.
+`xl:gap-10`. En sentido inverso, tips quedó en `xl:gap-28`.
 
 **La imagen del hero: manda el ancho.**
 Es full-bleed (`100vw`), no los 1400px del contenedor. Con `object-fit: cover` sobre una
@@ -243,6 +253,17 @@ vertical** — la posición horizontal no tiene ningún efecto. **Mínimo 2560px
 > a `0.72`** en vez de con `blur()`: fundida contra el ink del fondo, los artefactos del
 > reescalado dejan de leerse y la imagen queda como textura. Si algún día entra una imagen
 > de 2560px o más, se sube la opacidad.
+
+**Quitada la sección 5, la 4 sostiene sola el formulario flotante.**
+El formulario arranca 120px dentro del hero y mide ~1300px, así que cuelga ~800px por
+debajo del hero, cuya altura la fija solo la columna izquierda (~630px a 1440px). Ese
+sobrante lo absorbían las secciones 4 y 5 juntas; con la 5 fuera, la 4 sola daba ~570px de
+ink y la cola del formulario caía sobre el `bg-paper` de la sección 8 — que además no
+reserva la pista de 448px, así que se encimaba con su texto. Se compensa con
+`xl:pb-[75px]` en `CaseTips`. Solo en `xl`: por debajo de 1280px el formulario vuelve al
+flujo y no sobra nada. **El valor es un ajuste visual, no un cálculo exacto** — si la
+altura del formulario, del titular del hero o de los tips cambia, hay que re-tunearlo
+mirando el render a 1440px.
 
 **Estilos globales fuera de `@layer base` rompen la página entera.**
 Ver la sección correspondiente en `CLAUDE.md`. El `* { margin: 0; padding: 0 }` de
@@ -260,8 +281,8 @@ Next 16 se niega a arrancar un segundo dev server sobre el mismo directorio y sa
   numérico).
 - Cero colores fuera de los design tokens, salvo los literales heredados del código
   original documentados en la prohibición 4 de `CLAUDE.md`.
-- Cero copy fuera del guion y de las propuestas derivadas de él. Única excepción de datos:
-  las cifras de demo de la sección 5, marcadas en el propio archivo.
+- Cero copy fuera del guion y de las propuestas derivadas de él. Con la sección 5 fuera
+  del render, la página ya no muestra ninguna cifra de demo.
 - El disclaimer legal del footer, intacto.
 - `pnpm lint` (0 errores), `npx tsc --noEmit` y `pnpm build` pasan.
 - Render correcto a 1440px y 375px — lo verifica el usuario.

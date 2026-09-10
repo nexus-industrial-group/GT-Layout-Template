@@ -1,5 +1,4 @@
 import CaseIntakeForm from "@/components/sections/CaseIntakeForm";
-import CaseResults from "@/components/sections/CaseResults";
 import CaseTips from "@/components/sections/CaseTips";
 import ConsultationForm from "@/components/sections/ConsultationForm";
 import Footer from "@/components/sections/Footer";
@@ -20,14 +19,15 @@ export default function Home() {
             hay que devolverlo a su banda propia. */}
 
         {/* 3. Navbar + Hero image — recibe el formulario de la sección 6 en su
-            columna derecha, desde donde se desborda sobre las secciones 4 y 5 */}
+            columna derecha, desde donde se desborda sobre la sección 4 */}
         <Hero floatingForm={<CaseIntakeForm />} />
 
         {/* 4. Tres tips del caso */}
         <CaseTips />
 
-        {/* 5. Resultados de casos de Gary */}
-        <CaseResults />
+        {/* 5. Resultados de casos de Gary — quitada a pedido del usuario.
+            El componente CaseResults sigue en el repo sin usar, por si hay que
+            devolverla. Llevaba cifras de demo sin verificar. */}
 
         {/* 8. Contenido del video */}
         <VideoContent />

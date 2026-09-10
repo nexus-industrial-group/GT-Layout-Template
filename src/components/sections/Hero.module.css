@@ -1,6 +1,6 @@
-/* z-10 sobre las secciones 4 y 5 (que van en z-0): el formulario flotante
-   vive en la columna derecha de este hero y se desborda hacia abajo,
-   superponiéndose a ellas. Por eso el hero no recorta su contenido. */
+/* z-10 sobre la sección 4 (que va en z-0): el formulario flotante vive en la
+   columna derecha de este hero y se desborda hacia abajo, superponiéndose a
+   ella. Por eso el hero no recorta su contenido. */
 .hero {
   position: relative;
   z-index: 10;

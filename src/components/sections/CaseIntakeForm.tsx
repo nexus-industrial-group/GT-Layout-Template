@@ -18,10 +18,10 @@ const chargeTypes = [
   "Vape cart or disposable",
   "Wax, dabs, or concentrate",
   "Gummies or edibles",
-  "Flower / bud",
+  "Flower or bud",
   "Tincture or oil",
   "More than one kind",
-  "Nothing yet — I just have it at home",
+  "Nothing yet (I just have it at home)",
 ];
 
 // Preguntas específicas. Salen del guion: la parada de tráfico, el
@@ -31,24 +31,24 @@ const questions = [
     label: "Why did the officer stop you?",
     options: [
       "Traffic violation",
-      "They said they smelled something",
+      "Smell",
       "Checkpoint",
       "Someone called police",
       "I don’t know",
     ],
   },
   {
-    label: "Did you agree to let them search?",
+    label: "Did you agree to a search?",
     options: [
       "Yes",
-      "No — they searched anyway",
-      "They said they had a warrant",
+      "No (they searched anyway)",
+      "They had a warrant",
       "Not sure",
     ],
   },
   {
-    label: "Has a lab report come back yet?",
-    options: ["No", "Yes", "I don’t know"],
+    label: "Has a lab report come back?",
+    options: ["Yes", "No", "I don’t know"],
   },
 ];
 
@@ -100,53 +100,50 @@ export default function CaseIntakeForm() {
 
       <div className="px-6 py-6">
         {/* 1–3. Datos de contacto */}
-        <BlockHeading icon="user">How can I reach out to you?</BlockHeading>
+        <BlockHeading icon="user">How to reach out</BlockHeading>
         <div className="space-y-3.5">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelClass} htmlFor="intake-first-name">
-                First name
-              </label>
+          {/* Nombre: una sola etiqueta para los dos campos. Al perder su label
+              propio, cada input se nombra con aria-label — el placeholder no
+              cuenta como nombre accesible. */}
+          <div>
+            <p className={labelClass}>First name &amp; Last name</p>
+            <div className="grid grid-cols-2 gap-3">
               <input
                 id="intake-first-name"
                 type="text"
+                aria-label="First name"
                 placeholder="First name"
                 className={fieldClass}
               />
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="intake-last-name">
-                Last name
-              </label>
               <input
                 id="intake-last-name"
                 type="text"
+                aria-label="Last name"
                 placeholder="Last name"
                 className={fieldClass}
               />
             </div>
           </div>
+
+          {/* Contacto: una sola etiqueta, teléfono arriba y email debajo. */}
           <div>
-            <label className={labelClass} htmlFor="intake-phone">
-              Phone number
-            </label>
-            <input
-              id="intake-phone"
-              type="tel"
-              placeholder="(713) 000-0000"
-              className={fieldClass}
-            />
-          </div>
-          <div>
-            <label className={labelClass} htmlFor="intake-email">
-              Email
-            </label>
-            <input
-              id="intake-email"
-              type="email"
-              placeholder="you@email.com"
-              className={fieldClass}
-            />
+            <p className={labelClass}>Phone number &amp; Email</p>
+            <div className="space-y-3">
+              <input
+                id="intake-phone"
+                type="tel"
+                aria-label="Phone number"
+                placeholder="(713) 000-0000"
+                className={fieldClass}
+              />
+              <input
+                id="intake-email"
+                type="email"
+                aria-label="Email"
+                placeholder="you@email.com"
+                className={fieldClass}
+              />
+            </div>
           </div>
         </div>
 
@@ -160,31 +157,35 @@ export default function CaseIntakeForm() {
               </label>
               <select id="intake-charge" className={fieldClass} defaultValue="">
                 <option value="" disabled>
-                  Select what was found
+                  What was found?
                 </option>
                 {chargeTypes.map((type) => (
                   <option key={type}>{type}</option>
                 ))}
               </select>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className={labelClass} htmlFor="intake-date">
-                  Date it happened
-                </label>
-                <input id="intake-date" type="date" className={fieldClass} />
-              </div>
-              <div>
-                <label className={labelClass} htmlFor="intake-county">
-                  County
-                </label>
+
+            {/* Fecha y condado bajo una sola etiqueta, igual que el nombre.
+                Sin label propio, cada campo se nombra con aria-label; el
+                placeholder del select pasa de "Select" a "County", que sin la
+                etiqueta encima era lo único que lo identificaba. */}
+            <div>
+              <p className={labelClass}>Date it happened &amp; County</p>
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  id="intake-date"
+                  type="date"
+                  aria-label="Date it happened"
+                  className={fieldClass}
+                />
                 <select
                   id="intake-county"
+                  aria-label="County"
                   className={fieldClass}
                   defaultValue=""
                 >
                   <option value="" disabled>
-                    Select
+                    County
                   </option>
                   {counties.map((county) => (
                     <option key={county}>{county}</option>
@@ -196,7 +197,7 @@ export default function CaseIntakeForm() {
         </div>
 
         {/* Bloque de fondo tenue con línea en el borde izquierdo */}
-        <div className="mt-7 border-l-[3px] border-accent bg-[color-mix(in_srgb,var(--color-orange)_7%,transparent)] px-4 py-3.5">
+        {/* <div className="mt-7 border-l-[3px] border-accent bg-[color-mix(in_srgb,var(--color-orange)_7%,transparent)] px-4 py-3.5">
           <p className="font-inter text-[10.5px] font-semibold tracking-[0.1em] text-orange-deep uppercase">
             Why the answer matters
           </p>
@@ -205,11 +206,11 @@ export default function CaseIntakeForm() {
             jail felony, 180 days to 2 years and a fine up to $10,000. Two ounces
             or less of flower is still a Class B misdemeanor.
           </p>
-        </div>
+        </div> */}
 
         {/* Preguntas específicas con opciones clickeables */}
         <div className="mt-7 border-t border-line pt-6">
-          <BlockHeading icon="shield">What happened during the stop</BlockHeading>
+          <BlockHeading icon="shield">What happened during the stop?</BlockHeading>
           <div className="space-y-5">
             {questions.map(({ label, options }) => (
               <div key={label}>
@@ -232,19 +233,33 @@ export default function CaseIntakeForm() {
           </div>
         </div>
 
-        {/* Checklist de envío */}
+        {/* Checklist de envío. El texto que estaba debajo del botón subió aquí,
+            al mismo párrafo del consentimiento. El <label> envuelve solo la
+            frase de consentimiento, no el párrafo entero: si lo envolviera,
+            un clic en el teléfono marcaría también la casilla. */}
         <div className="mt-7 border-t border-line pt-6">
           <BlockHeading icon="check">Before you send</BlockHeading>
-          <label className="flex items-start gap-2.5 font-inter text-[12px] leading-relaxed text-ink-muted">
+          <div className="flex items-start gap-2.5 font-inter text-[12px] leading-relaxed text-ink-muted">
             <input
+              id="intake-consent"
               type="checkbox"
               className="mt-0.5 h-4 w-4 flex-none accent-accent"
             />
-            <span>
-              It’s okay to call, text, or email me. Sending this doesn’t create an
-              attorney–client relationship.
-            </span>
-          </label>
+            <p>
+              <label htmlFor="intake-consent">
+                It’s okay to call, text, or email me. Sending this doesn’t create
+                an attorney–client relationship.
+              </label>{" "}
+              I read these myself. Not a call center. Rather talk now? Call{" "}
+              <a
+                href="tel:7134291624"
+                className="font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4"
+              >
+                713-429-1624
+              </a>{" "}
+              within 5 minutes.
+            </p>
+          </div>
         </div>
 
         <button
@@ -253,16 +268,6 @@ export default function CaseIntakeForm() {
         >
           Call me within 5 minutes
         </button>
-
-        <p className="mt-3 text-center font-inter text-[12px] leading-relaxed text-ink-muted">
-          I read these myself. Not a call center. Rather talk now?{" "}
-          <a
-            href="tel:7134291624"
-            className="font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4"
-          >
-            713-429-1624
-          </a>
-        </p>
       </div>
     </form>
   );

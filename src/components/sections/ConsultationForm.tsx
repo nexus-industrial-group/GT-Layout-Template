@@ -50,54 +50,49 @@ export default function ConsultationForm() {
           <div className="pt-8">
             <BlockHeading icon="user">Your information</BlockHeading>
 
+            {/* Mismo criterio que en CaseIntakeForm: una sola etiqueta por
+                grupo. Al quedarse sin label propio, cada input se nombra con
+                aria-label — el placeholder no cuenta como nombre accesible. */}
             <div className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className={labelClass} htmlFor="consult-first-name">
-                    First name
-                  </label>
+              <div>
+                <p className={labelClass}>First name &amp; Last name</p>
+                <div className="grid gap-4 sm:grid-cols-2">
                   <input
                     id="consult-first-name"
                     type="text"
+                    aria-label="First name"
                     placeholder="First name"
                     className={fieldClass}
                   />
-                </div>
-                <div>
-                  <label className={labelClass} htmlFor="consult-last-name">
-                    Last name
-                  </label>
                   <input
                     id="consult-last-name"
                     type="text"
+                    aria-label="Last name"
                     placeholder="Last name"
                     className={fieldClass}
                   />
                 </div>
               </div>
 
+              {/* Teléfono arriba y email debajo, igual que en el intake. */}
               <div>
-                <label className={labelClass} htmlFor="consult-email">
-                  Email
-                </label>
-                <input
-                  id="consult-email"
-                  type="email"
-                  placeholder="you@email.com"
-                  className={fieldClass}
-                />
-              </div>
-
-              <div>
-                <label className={labelClass} htmlFor="consult-phone">
-                  Phone
-                </label>
-                <input
-                  id="consult-phone"
-                  type="tel"
-                  placeholder="(713) 000-0000"
-                  className={fieldClass}
-                />
+                <p className={labelClass}>Phone number &amp; Email</p>
+                <div className="space-y-4">
+                  <input
+                    id="consult-phone"
+                    type="tel"
+                    aria-label="Phone number"
+                    placeholder="(713) 000-0000"
+                    className={fieldClass}
+                  />
+                  <input
+                    id="consult-email"
+                    type="email"
+                    aria-label="Email"
+                    placeholder="you@email.com"
+                    className={fieldClass}
+                  />
+                </div>
               </div>
             </div>
           </div>

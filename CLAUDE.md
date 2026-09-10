@@ -177,13 +177,14 @@ esto antes que nada.
 5. **No inventar resultados de casos, cifras, estadísticas ni testimonios.** Es publicidad
    legal — datos falsos son un problema real, no cosmético. Si el guion no da el número,
    usa un placeholder explícito (`[CASE_COUNT]`, `[YEARS]`) y avisa al usuario.
-   **Excepción autorizada y acotada:** `CaseResults.tsx` lleva hoy cifras de demo
-   (31, 47, 22, 64, 29, 18, 12, 0) tomadas de `context/reference-proposal/`, que ese mismo
-   archivo marca como inventadas para el mock. Se pusieron a pedido expreso para que el
-   cliente vea la maqueta terminada. El archivo lleva el aviso
-   `⚠ CIFRAS DE DEMO — NO PUBLICAR SIN VERIFICAR`. **No borrar ese aviso, no extender la
-   excepción a otras secciones, y no publicar sin que Gary las reemplace con datos
-   verificables de sus expedientes.**
+   **La página hoy no muestra ninguna cifra.** La sección 5 (`CaseResults.tsx`), que
+   era la única excepción autorizada, salió del render a pedido del cliente. El archivo
+   sigue en el repo, sin usar, con sus cifras de demo (31, 47, 22, 64, 29, 18, 12, 0)
+   tomadas de `context/reference-proposal/` — que ese mismo archivo marca como inventadas
+   para el mock — y con su aviso `⚠ CIFRAS DE DEMO — NO PUBLICAR SIN VERIFICAR`.
+   **No borrar ese aviso. Si la sección vuelve al render, vuelve con él**, y no se publica
+   sin que Gary reemplace los números con datos verificables de sus expedientes. La
+   excepción no se extiende a ninguna otra sección.
 6. **No eliminar ni suavizar el disclaimer legal del footer**
    ("Attorney advertising. Prior results do not guarantee a similar outcome...").
 7. **No instalar dependencias nuevas** sin preguntar primero.
@@ -193,7 +194,8 @@ esto antes que nada.
 ## Estructura
 
 El orden de render vive en `src/app/page.tsx` y **no es el orden numérico** de las
-secciones: la 8 va antes que la 7, la 6 flota sobre 3–5 y la 2 quedó absorbida por la 1.
+secciones: la 8 va antes que la 7, la 6 flota sobre 3–4, la 2 quedó absorbida por la 1 y
+la 5 salió del render.
 
 `spec.md` describe cada sección, apunta a su componente y — en "Decisiones que costaron
 varias iteraciones" — explica el porqué de los acuerdos que se re-litigaron varias veces

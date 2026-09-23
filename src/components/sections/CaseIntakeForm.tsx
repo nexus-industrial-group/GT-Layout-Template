@@ -106,7 +106,7 @@ export default function CaseIntakeForm() {
               propio, cada input se nombra con aria-label — el placeholder no
               cuenta como nombre accesible. */}
           <div>
-            <p className={labelClass}>First name &amp; Last name</p>
+            <p className={labelClass}>Full Name</p>
             <div className="grid grid-cols-2 gap-3">
               <input
                 id="intake-first-name"
@@ -214,15 +214,19 @@ export default function CaseIntakeForm() {
           <div className="space-y-5">
             {questions.map(({ label, options }) => (
               <div key={label}>
-                <p className="mb-2.5 font-serif text-[15px] font-semibold text-ink-soft">
+                <p className="mb-3 font-serif text-[16px] font-semibold text-ink">
                   {label}
                 </p>
-                <div className="flex flex-wrap gap-1.5">
+                {/* Grid de dos columnas en vez de pills que se ajustan al
+                    texto: las celdas quedan del mismo ancho y comparten altura
+                    por fila, que es lo que le da el aire formal. La opción
+                    impar final ocupa una sola columna, no la fila completa. */}
+                <div className="grid grid-cols-2 gap-2.5">
                   {options.map((option) => (
                     <button
                       key={option}
                       type="button"
-                      className="rounded-[3px] border border-line-strong bg-white px-3 py-2 font-serif text-[15px] text-ink-soft transition-colors hover:border-accent hover:text-ink"
+                      className="flex min-h-[56px] items-center rounded-[3px] border border-line bg-white px-4 py-3 text-left font-serif text-[15px] leading-snug text-ink-soft transition-colors hover:border-accent hover:text-ink"
                     >
                       {option}
                     </button>

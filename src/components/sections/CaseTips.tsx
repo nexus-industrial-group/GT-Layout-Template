@@ -31,7 +31,7 @@ export default function CaseTips() {
     // al quitarse la 5, esta tiene que dar sola el fondo oscuro, o la cola del
     // formulario cae sobre el paper claro de la sección 8. Solo aplica en xl:
     // bajo 1280px el formulario vuelve al flujo y no sobra nada.
-    <section className="relative z-0 bg-ink pt-[49px] pb-[49px] lg:pt-[65px] lg:pb-[65px] xl:pb-[75px]">
+    <section className="relative z-0 bg-ink pt-[49px] pb-[279px] lg:pt-[65px] lg:pb-[295px] xl:pb-[305px]">
       <Container>
         <div className="grid xl:grid-cols-[minmax(0,1fr)_448px] xl:gap-28">
           <div>

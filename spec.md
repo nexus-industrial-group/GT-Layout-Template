@@ -111,8 +111,12 @@ párrafo de contexto y el cierre de Gary en un bloque con borde izquierdo `accen
 
 ## 4. Tres tips del caso → `sections/CaseTips.tsx`
 
-Color sólido `bg-ink`. El padding vertical (`pt-[49px] pb-[49px] lg:pt-[65px]
-lg:pb-[65px] xl:pb-[75px]`) se afinó a ojo contra el render: el `xl:pb` es el carril de
+Color sólido `bg-ink`. El padding vertical (`pt-[49px] pb-[279px] lg:pt-[65px]
+lg:pb-[295px] xl:pb-[305px]`) se afinó a ojo contra el render; el `pb` de cada breakpoint
+lleva 230px sumados a pedido del cliente sobre los valores originales (49 / 65 / 75), en
+cuatro pasadas de 30px, 80px, 100px y 20px. El `pb` ya no es solo el carril del formulario: el
+cliente pidió además una franja de ink vacía bajo los tips, así que no lo recortes
+"optimizándolo" contra la altura del formulario: el `xl:pb` es el carril de
 ink para la cola del formulario flotante, ver "Decisiones". Los tres tips van en **tres filas, no en tres
 columnas**, con **una línea vertical `accent` a la izquierda de las tres**. El cuerpo lleva
 `max-w-[70ch]` — a lo ancho de la columna izquierda, una línea sin medida se pasa de los
@@ -139,7 +143,8 @@ Color claro sobre `bg-paper`. Cada bloque lleva icono a la izquierda (`ui/FormIc
 **Campos**, agrupados bajo **una sola etiqueta por grupo** — los inputs sin label propio
 se nombran con `aria-label`, porque el placeholder no cuenta como nombre accesible:
 
-- *First name & Last name* — los dos campos en un grid de dos columnas.
+- *Full Name* — los dos campos (nombre y apellido) en un grid de dos columnas bajo esa
+  etiqueta única.
 - *Phone number & Email* — teléfono arriba, email debajo.
 - *Type of charge* — select, con `What was found?` de placeholder.
 - *Date it happened & County* — fecha (calendario nativo) y condado en un grid de dos
@@ -154,6 +159,13 @@ minutes.` (enlace `tel:`) en el mismo párrafo del consentimiento · y el botón
 
 > El `<label>` de ese párrafo envuelve **solo** la frase de consentimiento, no el párrafo
 > entero: si lo envolviera, un clic en el teléfono marcaría también la casilla.
+
+**Opciones de las preguntas:** grid de **dos columnas** (`gap-2.5`), no pills que se
+ajustan al texto. Cada celda es un `<button type="button">` de ancho igual, `min-h-[56px]`,
+`px-4 py-3`, texto `font-serif text-[15px]` alineado a la izquierda y centrado en vertical,
+borde `border-line` y fondo blanco. Las celdas de una misma fila comparten altura, así que
+una opción de dos líneas estira a su pareja — eso es lo que da el aire formal y regular.
+Una opción impar al final ocupa **una sola columna**, no la fila completa.
 
 El bloque de fondo tenue con el texto de penalidades (*"Why the answer matters"*) está
 **comentado**, no borrado — ver la tabla de la sección 8.
@@ -242,8 +254,10 @@ Formulario centrado (`max-w-[720px]`) sobre `bg-ink`.
 "Houston Criminal Law and Family Law" + la línea de "Schedule a free consultation".
 
 **Dos bloques con icono a la izquierda:**
-- *Your information* — mismas agrupaciones que el intake: *First name & Last name* en un
-  grid de dos columnas y *Phone number & Email* apilados, teléfono arriba
+- *Your information* — mismas agrupaciones que el intake: nombre y apellido en un grid de
+  dos columnas y *Phone number & Email* apilados, teléfono arriba. Su etiqueta de nombre
+  sigue siendo *First name & Last name*: la sección está fuera del render y no se tocó
+  cuando el intake pasó a *Full Name*
 - *Message* — textarea
 
 **Checkboxes:** "I have read the website disclaimer and privacy policy" ·
@@ -306,7 +320,7 @@ debajo del hero, cuya altura la fija solo la columna izquierda (~630px a 1440px)
 sobrante lo absorbían las secciones 4 y 5 juntas; con la 5 fuera, la 4 sola daba ~570px de
 ink y la cola del formulario caía sobre el `bg-paper` de la sección 8 — que además no
 reserva la pista de 448px, así que se encimaba con su texto. Se compensa con
-`xl:pb-[75px]` en `CaseTips`. Solo en `xl`: por debajo de 1280px el formulario vuelve al
+`xl:pb-[305px]` en `CaseTips`. Solo en `xl`: por debajo de 1280px el formulario vuelve al
 flujo y no sobra nada. **El valor es un ajuste visual, no un cálculo exacto** — si la
 altura del formulario, del titular del hero o de los tips cambia, hay que re-tunearlo
 mirando el render a 1440px.
